@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+    <script src="Js/jquery.js"></script>
+</head>
+<body>
+    <div>
+        <h2>All Products</h2>
+        <ul id="products"/>
+    </div>
+    <div>
+        <h2>Search By Id:</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();"/>
+        <p id="product"></p>
+        <script type="text/javascript">
+            var uri = "api/product";
+            $(document).ready(function () {
+                //Send an Ajax Request
+                $.getJSON(uri)
+                    .done(function (data) {
+                        //On success "Data contains a list of products
+                        $.each(data, function (key, item) {
+                            //Add a list of item to product
+                            $('<li>', { text: formatItem(item) }).appendTo('#products');
+                        });
+                    });
+            });
+            function formatItem(item) {
+                return item.Name + ': Ksh ' + item.Price;
+            }
+            function find() {
+                var id = $("#prodId").val();
+                $.getJSON(uri + '/' + id)
+                    .done(function (data) {
+                        //On success
+                        $('#product').text(formatItem(data));
+                    })
+                    .fail(function (jqXHR, textStatus, err) {
+                        $('#product').text('Error: ' + err);
+                    });
+            }
+        </script>
+    </div>
+</body>
+</html>
